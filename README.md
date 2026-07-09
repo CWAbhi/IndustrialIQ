@@ -2,9 +2,7 @@
 
 ![IndustrialIQ Banner](https://via.placeholder.com/1200x400/0a0e1a/3b82f6?text=IndustrialIQ+Knowledge+OS)
 
-**Winning Solution for ET AI Hackathon 2026 Problem Statement #8: AI for Industrial Knowledge Intelligence**
-
-IndustrialIQ is a comprehensive AI platform that serves as the operating system for industrial knowledge. Instead of just searching documents, it understands every asset, procedure, incident, and maintenance record across the plant, forming an intelligent, interconnected Knowledge Graph that reasons about industrial operations.
+IndustrialIQ is a comprehensive enterprise platform that serves as the operating system for industrial knowledge. By forming an intelligent, interconnected Knowledge Graph, it understands every asset, procedure, incident, and maintenance record across your plant, enabling proactive operations and preventing critical downtime.
 
 ## Key Features
 
@@ -24,6 +22,13 @@ IndustrialIQ is a comprehensive AI platform that serves as the operating system 
 - **Visualizations:** D3.js (Force-directed Knowledge Graph)
 
 ## Getting Started
+
+### Prerequisites
+
+- Node.js (v18 or higher)
+- npm or yarn
+
+### Installation
 
 1. Clone the repository:
    ```bash
@@ -45,21 +50,14 @@ IndustrialIQ is a comprehensive AI platform that serves as the operating system 
    npm run dev
    ```
 
-5. Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+5. Open [http://localhost:3000](http://localhost:3000) with your browser to see the application.
 
 ## Project Structure
 
 - `/app/src/app`: Next.js pages, layouts, and global styles.
 - `/app/src/components`: React components (Dashboard, ChatInterface, AssetIntelligence, KnowledgeGraph, ComplianceCenter, Sidebar).
-- `/app/src/data`: Comprehensive mock data layer (`assets.ts`) representing the Knowledge Graph.
+- `/app/src/data`: Data layer representing the Knowledge Graph and asset telemetry.
 
-## Judging Criteria Alignment
+## License
 
-- **Innovation (25%):** Moves beyond simple RAG to multi-hop reasoning over a structured Knowledge Graph and Failure DNA matching.
-- **Business Impact (25%):** Focuses on ROI (downtime avoided, cost reduction, efficiency gains) and actionable intelligence.
-- **Technical Excellence (20%):** Robust Next.js architecture, performant D3.js visualizations, and a scalable data model.
-- **Scalability (15%):** Designed with a scalable component structure and modular data architecture.
-- **User Experience (15%):** Premium, modern dark-mode aesthetic with interactive visual feedback and micro-animations.
-
----
-Built by Antigravity for ET AI Hackathon 2026.
+Copyright © 2026 IndustrialIQ. All rights reserved.
