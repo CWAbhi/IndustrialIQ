@@ -14,7 +14,11 @@ import {
 } from 'lucide-react';
 import { complianceItems } from '@/data/assets';
 
-export default function ComplianceCenter() {
+interface ComplianceCenterProps {
+  addToast?: (type: 'success' | 'error' | 'info', title: string, message: string) => void;
+}
+
+export default function ComplianceCenter({ addToast }: ComplianceCenterProps) {
   const overallScore = Math.round(complianceItems.reduce((sum, c) => sum + c.score, 0) / complianceItems.length);
   const totalGaps = complianceItems.reduce((sum, c) => sum + c.gaps, 0);
   const overdueItems = complianceItems.filter(c => c.status === 'Overdue');
@@ -191,10 +195,35 @@ export default function ComplianceCenter() {
 
             {/* Actions */}
             <div style={{ display: 'flex', gap: '8px', marginTop: '12px' }}>
-              <button className="btn btn-secondary" style={{ fontSize: '11px', flex: 1 }}>
+              <button 
+                className="btn btn-secondary" 
+                style={{ fontSize: '11px', flex: 1 }}
+                onClick={() => {
+                  window.alert(`Compliance Details for ${item.regulation}\n\nClause: ${item.clause}\nStatus: ${item.status}\nScore: ${item.score}%\nGaps: ${item.gaps}\n\nDescription:\n${item.description}\n\nEvidence Documents:\n${item.evidence.map(e => '- ' + e).join('\n')}`);
+                  if (addToast) addToast('info', 'Viewing Details', `Opened compliance details for ${item.regulation}...`);
+                }}
+              >
                 <FileText size={12} /> View Details
               </button>
-              <button className="btn btn-primary" style={{ fontSize: '11px', flex: 1 }}>
+              <button 
+                className="btn btn-primary" 
+                style={{ fontSize: '11px', flex: 1 }}
+                onClick={() => {
+                  if (addToast) addToast('success', 'Export Started', `Packaging audit evidence for ${item.regulation}. Download starting...`);
+                  
+                  // Simulate an actual file download for the MVP
+                  const content = `AUDIT EXPORT: ${item.regulation}\nGenerated on: ${new Date().toISOString()}\n\nStatus: ${item.status}\nScore: ${item.score}%\n\nDocuments Included:\n${item.evidence.map(e => '[ATTACHED] ' + e).join('\n')}\n\n--- END OF REPORT ---`;
+                  const blob = new Blob([content], { type: 'text/plain' });
+                  const url = URL.createObjectURL(blob);
+                  const a = document.createElement('a');
+                  a.href = url;
+                  a.download = `${item.regulation.replace(/[^a-zA-Z0-9]/g, '_')}_Audit_Package.txt`;
+                  document.body.appendChild(a);
+                  a.click();
+                  document.body.removeChild(a);
+                  URL.revokeObjectURL(url);
+                }}
+              >
                 <Download size={12} /> Export Package
               </button>
             </div>

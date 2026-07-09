@@ -305,9 +305,17 @@ export default function KnowledgeGraphExplorer() {
       </div>
 
       {/* Graph Container */}
-      <div ref={containerRef} className="graph-container" style={{ flex: 1 }}>
+      <div ref={containerRef} className="graph-container" style={{ flex: 1, position: 'relative', overflow: 'hidden', borderRadius: 'var(--radius-lg)' }}>
+        {/* Space Background */}
+        <div className="space-background">
+          <div className="stars"></div>
+          <div className="stars2"></div>
+          <div className="nebula"></div>
+          <div className="nebula2"></div>
+        </div>
+
         {/* Filters */}
-        <div className="graph-controls">
+        <div className="graph-controls" style={{ position: 'relative', zIndex: 10 }}>
           {Object.entries(nodeLabels).map(([type, label]) => (
             <button
               key={type}
@@ -332,7 +340,7 @@ export default function KnowledgeGraphExplorer() {
           ))}
         </div>
 
-        <svg ref={svgRef} style={{ width: '100%', height: '100%' }} />
+        <svg ref={svgRef} style={{ width: '100%', height: '100%', position: 'absolute', top: 0, left: 0, zIndex: 5 }} />
 
         {/* Legend */}
         <div className="graph-legend">

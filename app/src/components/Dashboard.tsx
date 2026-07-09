@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import {
   TrendingUp,
   TrendingDown,
@@ -18,9 +18,13 @@ import {
   Database,
   GitBranch,
 } from 'lucide-react';
-import { plantKPIs, alerts, assets } from '@/data/assets';
+import { plantKPIs, alerts as initialAlerts, assets } from '@/data/assets';
+interface DashboardProps {
+  addToast?: (type: 'success' | 'error' | 'info', title: string, message: string) => void;
+}
 
-export default function Dashboard() {
+export default function Dashboard({ addToast }: DashboardProps) {
+  const [activeAlerts, setActiveAlerts] = useState(initialAlerts);
   const formatCurrency = (val: number) => {
     if (val >= 10000000) return `₹${(val / 10000000).toFixed(1)} Cr`;
     if (val >= 100000) return `₹${(val / 100000).toFixed(0)} L`;
@@ -120,7 +124,7 @@ export default function Dashboard() {
       </div>
 
       {/* Main Content Grid */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 380px', gap: '24px' }}>
+      <div className="dashboard-grid">
         {/* Left: Proactive Intelligence */}
         <div className="card">
           <div className="card-header">
@@ -134,7 +138,7 @@ export default function Dashboard() {
           </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-            {alerts.map((alert) => (
+            {activeAlerts.map((alert) => (
               <div key={alert.id} className={`alert-card ${alert.type}`}>
                 <div className="alert-header">
                   <div className="alert-icon">{getAlertIcon(alert.type)}</div>
@@ -153,7 +157,30 @@ export default function Dashboard() {
                 )}
                 <div className="alert-actions">
                   {alert.actions.map((action, i) => (
-                    <button key={i} className={`btn btn-${action.type === 'primary' ? 'primary' : action.type === 'danger' ? 'danger' : 'secondary'}`}>
+                    <button 
+                      key={i} 
+                      className={`btn btn-${action.type === 'primary' ? 'primary' : action.type === 'danger' ? 'danger' : 'secondary'}`}
+                      onClick={() => {
+                        if (action.label === 'Dismiss') {
+                          setActiveAlerts(activeAlerts.filter(a => a.id !== alert.id));
+                          if (addToast) addToast('info', 'Alert Dismissed', `Dismissed alert: ${alert.title}`);
+                        } else if (action.label.includes('Work Order') || action.label.includes('Inspection') || action.label.includes('Check')) {
+                          const priority = window.prompt(`Set priority for Work Order related to ${alert.title} (High, Medium, Low):`, 'High');
+                          if (priority) {
+                            if (addToast) addToast('success', 'Work Order Created', `Created ${priority} priority work order for ${alert.title}`);
+                            setActiveAlerts(activeAlerts.filter(a => a.id !== alert.id));
+                          }
+                        } else if (action.label.includes('Analysis') || action.label.includes('DNA')) {
+                          window.alert(`Analysis Report for ${alert.title}\n\nConfidence: ${alert.confidence ? Math.round(alert.confidence*100) : 90}%\nSource: ${alert.source || 'AI Agent'}\n\nDetailed breakdown of the anomaly indicates immediate attention is required. Review recommended procedures.`);
+                          if (addToast) addToast('info', 'Analysis Viewed', `Viewed analysis for ${alert.title}`);
+                        } else if (action.label.includes('Expert') || action.label.includes('Knowledge')) {
+                          window.alert(`Knowledge Capture for ${alert.title}\n\nInitiating knowledge extraction protocol. Connecting to Expert Network profiles...`);
+                          if (addToast) addToast('info', 'Action Triggered', `Triggered ${action.label}`);
+                        } else {
+                          if (addToast) addToast('info', 'Action Triggered', `Triggered ${action.label} for ${alert.title}`);
+                        }
+                      }}
+                    >
                       {action.label}
                     </button>
                   ))}

@@ -20,6 +20,7 @@ import {
 interface SidebarProps {
   activeTab: string;
   onTabChange: (tab: string) => void;
+  isMobileOpen?: boolean;
 }
 
 const navItems = [
@@ -37,9 +38,9 @@ const secondaryItems = [
   { id: 'documents', label: 'Document Vault', icon: FileText },
 ];
 
-export default function Sidebar({ activeTab, onTabChange }: SidebarProps) {
+export default function Sidebar({ activeTab, onTabChange, isMobileOpen }: SidebarProps) {
   return (
-    <div className="sidebar">
+    <div className={`sidebar ${isMobileOpen ? 'mobile-open' : ''}`}>
       {/* Logo */}
       <div className="sidebar-logo">
         <div className="sidebar-logo-icon">IQ</div>
