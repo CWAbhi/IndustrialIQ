@@ -1,6 +1,5 @@
 # IndustrialIQ — Unified Asset & Operations Brain
 
-![IndustrialIQ Banner](https://via.placeholder.com/1200x400/0a0e1a/3b82f6?text=IndustrialIQ+Knowledge+OS)
 
 IndustrialIQ is a comprehensive enterprise platform that serves as the operating system for industrial knowledge. By forming an intelligent, interconnected Knowledge Graph, it understands every asset, procedure, incident, and maintenance record across your plant, enabling proactive operations and preventing critical downtime.
 
