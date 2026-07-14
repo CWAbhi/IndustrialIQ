@@ -1,11 +1,5 @@
 import type { NextConfig } from "next";
 
-const nextConfig: NextConfig = {
-  experimental: {
-    turbopack: {
-      root: "/Users/abhijeetdey/Desktop/IndustrialIQ/app",
-    },
-  },
-};
+const nextConfig: NextConfig = {};
 
 export default nextConfig;

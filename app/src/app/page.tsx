@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Search, Bell, Mic, Settings, Moon, Wifi, CheckCircle2, AlertTriangle, Info, Menu } from 'lucide-react';
+import { Search, Bell, Mic, Settings, Moon, Sun, Wifi, CheckCircle2, AlertTriangle, Info, Menu } from 'lucide-react';
 import Sidebar from '@/components/Sidebar';
 import Dashboard from '@/components/Dashboard';
 import ChatInterface from '@/components/ChatInterface';
@@ -42,7 +42,12 @@ export default function Home() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [activeTab, setActiveTab] = useState('dashboard');
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
+  const [theme, setTheme] = useState('dark');
   const [toasts, setToasts] = useState<{id: string, type: 'success'|'error'|'info', title: string, message: string}[]>([]);
+
+  React.useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+  }, [theme]);
 
   const addToast = (type: 'success'|'error'|'info', title: string, message: string) => {
     const id = Math.random().toString(36).substr(2, 9);
@@ -140,6 +145,9 @@ export default function Home() {
               <input type="text" placeholder="Search assets, documents, procedures..." />
               <span className="search-shortcut">⌘K</span>
             </div>
+            <button className="btn-icon" onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} title="Toggle Theme">
+              {theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
+            </button>
             <button className="btn-icon" style={{ position: 'relative' }} onClick={handleBellClick}>
               <Bell size={16} />
               <span style={{

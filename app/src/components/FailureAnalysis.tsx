@@ -8,9 +8,9 @@ interface FailureAnalysisProps {
 
 export default function FailureAnalysis({ addToast }: FailureAnalysisProps) {
   const anomalies = [
-    { asset: 'Pump P-101A', type: 'Vibration Spike', probability: '94%', impact: 'High', status: 'Investigating' },
-    { asset: 'Compressor C-202', type: 'Temperature Rise', probability: '82%', impact: 'Medium', status: 'Matched DNA' },
-    { asset: 'Valve V-404', type: 'Flow Fluctuation', probability: '65%', impact: 'Low', status: 'Monitoring' },
+    { asset: 'Main Feed Pump (P-101A)', type: 'Vibration Spike', probability: '94%', impact: 'High', status: 'Investigating' },
+    { asset: 'Boil-off Gas Compressor (C-202)', type: 'Temperature Rise', probability: '82%', impact: 'Medium', status: 'Matched DNA' },
+    { asset: 'Control Valve (V-404)', type: 'Flow Fluctuation', probability: '65%', impact: 'Low', status: 'Monitoring' },
   ];
 
   return (

@@ -1,7 +1,8 @@
 'use client';
 
-import React from 'react';
-import { Users, Mail, MessageSquare, Star } from 'lucide-react';
+import React, { useState } from 'react';
+import { Users, Mail, MessageSquare, Star, Send } from 'lucide-react';
+import Modal from '@/components/Modal';
 interface ExpertNetworkProps {
   addToast?: (type: 'success' | 'error' | 'info', title: string, message: string) => void;
 }
@@ -13,6 +14,8 @@ export default function ExpertNetwork({ addToast }: ExpertNetworkProps) {
     { name: 'Priya Sharma', role: 'Process Safety Expert', expertise: ['Compliance', 'Hazard Analysis'], rating: 4.8 },
     { name: 'David Kim', role: 'Control Systems Engineer', expertise: ['PLC Programming', 'SCADA'], rating: 4.9 },
   ];
+  const [selectedExpert, setSelectedExpert] = useState<any>(null);
+  const [messageText, setMessageText] = useState('');
 
   return (
     <div className="page-content" style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
@@ -61,10 +64,8 @@ export default function ExpertNetwork({ addToast }: ExpertNetworkProps) {
                   className="btn btn-secondary" 
                   style={{ flex: 1 }}
                   onClick={() => {
-                    const msg = window.prompt(`Type your message to ${expert.name}:`);
-                    if (msg) {
-                      if (addToast) addToast('success', 'Message Sent', `Your message to ${expert.name} has been delivered.`);
-                    }
+                    setSelectedExpert(expert);
+                    setMessageText('');
                   }}
                 >
                   <MessageSquare size={14} /> Message
@@ -84,6 +85,61 @@ export default function ExpertNetwork({ addToast }: ExpertNetworkProps) {
           </div>
         ))}
       </div>
+
+      {/* Message Modal */}
+      <Modal 
+        isOpen={!!selectedExpert} 
+        onClose={() => setSelectedExpert(null)} 
+        title={`Message ${selectedExpert?.name}`}
+      >
+        {selectedExpert && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <p style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>
+              Send a secure direct message to <strong>{selectedExpert.name}</strong> ({selectedExpert.role}). They usually reply within 2-4 hours.
+            </p>
+            
+            <textarea 
+              value={messageText}
+              onChange={(e) => setMessageText(e.target.value)}
+              placeholder="Type your message here..."
+              style={{ 
+                width: '100%', 
+                minHeight: '120px', 
+                background: 'var(--bg-tertiary)', 
+                border: '1px solid var(--border-primary)', 
+                borderRadius: 'var(--radius-md)', 
+                padding: '12px',
+                color: 'var(--text-primary)',
+                fontFamily: 'inherit',
+                fontSize: '13px',
+                outline: 'none',
+                resize: 'vertical'
+              }}
+            />
+            
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px', marginTop: '8px' }}>
+              <button 
+                className="btn btn-secondary" 
+                onClick={() => setSelectedExpert(null)}
+              >
+                Cancel
+              </button>
+              <button 
+                className="btn btn-primary"
+                disabled={!messageText.trim()}
+                style={{ opacity: !messageText.trim() ? 0.5 : 1, display: 'flex', alignItems: 'center', gap: '6px' }}
+                onClick={() => {
+                  if (addToast) addToast('success', 'Message Sent', `Your message to ${selectedExpert.name} has been securely delivered.`);
+                  setSelectedExpert(null);
+                  setMessageText('');
+                }}
+              >
+                <Send size={14} /> Send Message
+              </button>
+            </div>
+          </div>
+        )}
+      </Modal>
     </div>
   );
 }

@@ -2,17 +2,22 @@
 
 import React, { useState } from 'react';
 import { Settings, Wrench, Calendar, AlertTriangle, CheckCircle2, Clock } from 'lucide-react';
+import Modal from '@/components/Modal';
 interface MaintenanceHubProps {
   addToast?: (type: 'success' | 'error' | 'info', title: string, message: string) => void;
 }
 
 export default function MaintenanceHub({ addToast }: MaintenanceHubProps) {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [newWoAsset, setNewWoAsset] = useState('');
+  const [newWoType, setNewWoType] = useState('Corrective');
+
   const [workOrders, setWorkOrders] = useState([
-    { id: 'WO-2026-892', asset: 'Pump P-101A', type: 'Preventive', status: 'In Progress', priority: 'High', date: 'Today' },
-    { id: 'WO-2026-893', asset: 'Compressor C-202', type: 'Corrective', status: 'Scheduled', priority: 'Medium', date: 'Tomorrow' },
-    { id: 'WO-2026-894', asset: 'Heat Exchanger HE-301', type: 'Inspection', status: 'Completed', priority: 'Low', date: 'Yesterday' },
-    { id: 'WO-2026-895', asset: 'Valve V-404', type: 'Calibration', status: 'Overdue', priority: 'Critical', date: '3 Days Ago' },
-    { id: 'WO-2026-896', asset: 'Motor M-505', type: 'Preventive', status: 'Scheduled', priority: 'Medium', date: 'Next Week' },
+    { id: 'WO-2026-892', asset: 'Main Feed Pump (P-101A)', type: 'Preventive', status: 'In Progress', priority: 'High', date: 'Today' },
+    { id: 'WO-2026-893', asset: 'Boil-off Gas Compressor (C-202)', type: 'Corrective', status: 'Scheduled', priority: 'Medium', date: 'Tomorrow' },
+    { id: 'WO-2026-894', asset: 'Primary Heat Exchanger (HE-301)', type: 'Inspection', status: 'Completed', priority: 'Low', date: 'Yesterday' },
+    { id: 'WO-2026-895', asset: 'Control Valve (V-404)', type: 'Calibration', status: 'Overdue', priority: 'Critical', date: '3 Days Ago' },
+    { id: 'WO-2026-896', asset: 'Cooling Tower Motor (M-505)', type: 'Preventive', status: 'Scheduled', priority: 'Medium', date: 'Next Week' },
   ]);
 
   const getStatusColor = (status: string) => {
@@ -62,26 +67,66 @@ export default function MaintenanceHub({ addToast }: MaintenanceHubProps) {
           </div>
           <button 
             className="btn btn-primary"
-            onClick={() => {
-              const assetName = window.prompt('Enter asset name for new work order:');
-              if (assetName) {
-                const type = window.prompt('Enter work order type (e.g. Preventive, Corrective):') || 'Corrective';
-                const newWo = {
-                  id: `WO-2026-${Math.floor(Math.random() * 900) + 100}`,
-                  asset: assetName,
-                  type: type,
-                  status: 'Scheduled',
-                  priority: 'Medium',
-                  date: 'Today'
-                };
-                setWorkOrders([newWo, ...workOrders]);
-                if (addToast) addToast('success', 'Work Order Created', `Work order ${newWo.id} created for ${assetName}`);
-              }
-            }}
+            onClick={() => setIsModalOpen(true)}
           >
             Create Work Order
           </button>
         </div>
+        
+        <Modal 
+          isOpen={isModalOpen} 
+          onClose={() => setIsModalOpen(false)} 
+          title="Create New Work Order"
+          footer={
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px' }}>
+              <button className="btn btn-secondary" onClick={() => setIsModalOpen(false)}>Cancel</button>
+              <button className="btn btn-primary" onClick={() => {
+                if (newWoAsset) {
+                  const newWo = {
+                    id: `WO-2026-${Math.floor(Math.random() * 900) + 100}`,
+                    asset: newWoAsset,
+                    type: newWoType,
+                    status: 'Scheduled',
+                    priority: 'Medium',
+                    date: 'Today'
+                  };
+                  setWorkOrders([newWo, ...workOrders]);
+                  if (addToast) addToast('success', 'Work Order Created', `Work order ${newWo.id} created for ${newWoAsset}`);
+                  setIsModalOpen(false);
+                  setNewWoAsset('');
+                  setNewWoType('Corrective');
+                }
+              }}>Create Order</button>
+            </div>
+          }
+        >
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <div>
+              <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: 500 }}>Asset Name</label>
+              <input 
+                type="text" 
+                value={newWoAsset} 
+                onChange={e => setNewWoAsset(e.target.value)} 
+                placeholder="e.g. Main Feed Pump (P-101A)"
+                style={{ width: '100%', padding: '10px', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-primary)', background: 'var(--bg-tertiary)', color: 'var(--text-primary)' }}
+              />
+            </div>
+            <div>
+              <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: 500 }}>Work Order Type</label>
+              <select 
+                value={newWoType} 
+                onChange={e => setNewWoType(e.target.value)}
+                style={{ width: '100%', padding: '10px', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-primary)', background: 'var(--bg-tertiary)', color: 'var(--text-primary)' }}
+              >
+                <option>Corrective</option>
+                <option>Preventive</option>
+                <option>Inspection</option>
+                <option>Calibration</option>
+              </select>
+            </div>
+          </div>
+        </Modal>
+        
         <div style={{ overflowX: 'auto' }}>
           <table className="data-table">
             <thead>

@@ -70,13 +70,13 @@ function AssetList({ onSelect }: { onSelect: (id: string) => void }) {
               <div style={{ flex: 1 }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
                   <span className={`criticality-badge ${asset.criticality}`}>{asset.criticality}</span>
-                  <span style={{ fontSize: '15px', fontWeight: 700, color: 'var(--text-primary)' }}>{asset.tag}</span>
+                  <span style={{ fontSize: '16px', fontWeight: 700, color: 'var(--text-primary)' }}>{asset.name}</span>
+                  <span style={{ fontSize: '14px', color: 'var(--text-tertiary)' }}>({asset.tag})</span>
                   <span className={`badge ${asset.status === 'Running' ? 'badge-success' : asset.status === 'Standby' ? 'badge-info' : asset.status === 'Under Maintenance' ? 'badge-warning' : 'badge-neutral'}`}>
                     {asset.status}
                   </span>
                 </div>
-                <div style={{ fontSize: '13px', color: 'var(--text-secondary)', marginBottom: '2px' }}>{asset.name}</div>
-                <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>
+                <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
                   {asset.manufacturer} {asset.model} · {asset.unit}
                 </div>
               </div>
@@ -131,7 +131,7 @@ function AssetDetail({ assetId, onBack }: { assetId: string; onBack: () => void 
             {asset.type === 'Pump' ? '⚙️' : asset.type === 'Compressor' ? '🔄' : asset.type === 'Heat Exchanger' ? '🔥' : asset.type === 'Vessel' ? '🛢️' : '⚡'}
           </div>
           <div className="asset-header-info">
-            <h2>{asset.tag} — {asset.name}</h2>
+            <h2>{asset.name} <span style={{ color: 'var(--text-tertiary)', fontSize: '0.8em', fontWeight: 400 }}>({asset.tag})</span></h2>
             <div className="asset-header-meta">
               <span className={`criticality-badge ${asset.criticality}`}>{asset.criticality}</span>
               <span className={`badge ${asset.status === 'Running' ? 'badge-success' : 'badge-info'}`}>{asset.status}</span>

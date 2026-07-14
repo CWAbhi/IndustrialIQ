@@ -750,7 +750,7 @@ export const failureDNAs: FailureDNA[] = [
 export const complianceItems: ComplianceItem[] = [
   {
     id: 'comp-001',
-    regulation: 'OISD-154',
+    regulation: 'Fire & Safety Standard (OISD-154)',
     clause: 'Fire Protection Facilities',
     description: 'Fire protection systems inspection and maintenance',
     status: 'Compliant',
@@ -762,7 +762,7 @@ export const complianceItems: ComplianceItem[] = [
   },
   {
     id: 'comp-002',
-    regulation: 'PESO',
+    regulation: 'Explosives & Pressure Regulations (PESO)',
     clause: 'Pressure Vessel Periodic Inspection',
     description: 'Statutory inspection of pressure vessels as per Indian Boiler Regulations',
     status: 'Overdue',
@@ -774,7 +774,7 @@ export const complianceItems: ComplianceItem[] = [
   },
   {
     id: 'comp-003',
-    regulation: 'PNGRB',
+    regulation: 'Pipeline Integrity Guidelines (PNGRB)',
     clause: 'Pipeline Integrity Management',
     description: 'Pipeline integrity assessment and management system',
     status: 'Gap',
@@ -786,7 +786,7 @@ export const complianceItems: ComplianceItem[] = [
   },
   {
     id: 'comp-004',
-    regulation: 'Factory Act',
+    regulation: 'Factory Operations Act',
     clause: 'License Renewal',
     description: 'Factory operating license periodic renewal',
     status: 'Upcoming',
@@ -798,7 +798,7 @@ export const complianceItems: ComplianceItem[] = [
   },
   {
     id: 'comp-005',
-    regulation: 'IS-2062',
+    regulation: 'Structural Steel Code (IS-2062)',
     clause: 'Structural Steel Standards',
     description: 'Compliance with Indian Standard for structural steel',
     status: 'Compliant',
@@ -810,7 +810,7 @@ export const complianceItems: ComplianceItem[] = [
   },
   {
     id: 'comp-006',
-    regulation: 'Environmental Clearance',
+    regulation: 'Environmental Clearance (MoEFCC)',
     clause: 'Emission Monitoring',
     description: 'Continuous emission monitoring and reporting',
     status: 'Compliant',
@@ -822,7 +822,7 @@ export const complianceItems: ComplianceItem[] = [
   },
   {
     id: 'comp-007',
-    regulation: 'OISD-GDN-206',
+    regulation: 'Safety Audit Guidelines (OISD-GDN-206)',
     clause: 'Safety Audit',
     description: 'Periodic safety audit as per OISD guidelines',
     status: 'Compliant',

@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import {
   ShieldCheck,
   AlertTriangle,
@@ -13,12 +13,14 @@ import {
   ChevronRight,
 } from 'lucide-react';
 import { complianceItems } from '@/data/assets';
+import Modal from '@/components/Modal';
 
 interface ComplianceCenterProps {
   addToast?: (type: 'success' | 'error' | 'info', title: string, message: string) => void;
 }
 
 export default function ComplianceCenter({ addToast }: ComplianceCenterProps) {
+  const [selectedItem, setSelectedItem] = useState<any>(null);
   const overallScore = Math.round(complianceItems.reduce((sum, c) => sum + c.score, 0) / complianceItems.length);
   const totalGaps = complianceItems.reduce((sum, c) => sum + c.gaps, 0);
   const overdueItems = complianceItems.filter(c => c.status === 'Overdue');
@@ -199,7 +201,7 @@ export default function ComplianceCenter({ addToast }: ComplianceCenterProps) {
                 className="btn btn-secondary" 
                 style={{ fontSize: '11px', flex: 1 }}
                 onClick={() => {
-                  window.alert(`Compliance Details for ${item.regulation}\n\nClause: ${item.clause}\nStatus: ${item.status}\nScore: ${item.score}%\nGaps: ${item.gaps}\n\nDescription:\n${item.description}\n\nEvidence Documents:\n${item.evidence.map(e => '- ' + e).join('\n')}`);
+                  setSelectedItem(item);
                   if (addToast) addToast('info', 'Viewing Details', `Opened compliance details for ${item.regulation}...`);
                 }}
               >
@@ -230,6 +232,60 @@ export default function ComplianceCenter({ addToast }: ComplianceCenterProps) {
           </div>
         ))}
       </div>
+
+      <Modal 
+        isOpen={!!selectedItem} 
+        onClose={() => setSelectedItem(null)} 
+        title={`Compliance Details: ${selectedItem?.regulation}`}
+      >
+        {selectedItem && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <div style={{ display: 'flex', gap: '16px' }}>
+              <div style={{ flex: 1, padding: '12px', background: 'var(--bg-tertiary)', borderRadius: 'var(--radius-md)' }}>
+                <div style={{ fontSize: '11px', color: 'var(--text-tertiary)', textTransform: 'uppercase' }}>Status</div>
+                <div style={{ fontSize: '15px', fontWeight: 600, color: getScoreColor(selectedItem.score), display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  {getStatusIcon(selectedItem.status)} {selectedItem.status}
+                </div>
+              </div>
+              <div style={{ flex: 1, padding: '12px', background: 'var(--bg-tertiary)', borderRadius: 'var(--radius-md)' }}>
+                <div style={{ fontSize: '11px', color: 'var(--text-tertiary)', textTransform: 'uppercase' }}>Score</div>
+                <div style={{ fontSize: '15px', fontWeight: 600, color: 'var(--text-primary)' }}>{selectedItem.score}%</div>
+              </div>
+              <div style={{ flex: 1, padding: '12px', background: 'var(--bg-tertiary)', borderRadius: 'var(--radius-md)' }}>
+                <div style={{ fontSize: '11px', color: 'var(--text-tertiary)', textTransform: 'uppercase' }}>Gaps</div>
+                <div style={{ fontSize: '15px', fontWeight: 600, color: selectedItem.gaps > 0 ? 'var(--status-warning)' : 'var(--text-primary)' }}>{selectedItem.gaps}</div>
+              </div>
+            </div>
+
+            <div>
+              <div style={{ fontSize: '13px', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '4px' }}>Clause</div>
+              <div style={{ fontSize: '14px', color: 'var(--text-primary)' }}>{selectedItem.clause}</div>
+            </div>
+
+            <div>
+              <div style={{ fontSize: '13px', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '4px' }}>Description</div>
+              <div style={{ fontSize: '14px', color: 'var(--text-primary)', lineHeight: '1.5' }}>{selectedItem.description}</div>
+            </div>
+
+            <div>
+              <div style={{ fontSize: '13px', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '8px' }}>Evidence Documents</div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                {selectedItem.evidence.map((e: string, i: number) => (
+                  <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px', background: 'var(--bg-tertiary)', borderRadius: 'var(--radius-md)' }}>
+                    <FileText size={14} style={{ color: 'var(--accent-primary)' }} />
+                    <span style={{ fontSize: '13px', color: 'var(--text-primary)', flex: 1 }}>{e}</span>
+                    <CheckCircle2 size={14} style={{ color: 'var(--status-success)' }} />
+                  </div>
+                ))}
+              </div>
+            </div>
+            
+            <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '12px' }}>
+              <button className="btn btn-secondary" onClick={() => setSelectedItem(null)}>Close</button>
+            </div>
+          </div>
+        )}
+      </Modal>
     </div>
   );
 }
