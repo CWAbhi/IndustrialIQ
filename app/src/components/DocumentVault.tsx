@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useRef, useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { FileText, Search, Download, Folder, File, ExternalLink, X, ZoomIn, ZoomOut, Printer, ChevronDown } from 'lucide-react';
 import Modal from '@/components/Modal';
 
@@ -245,7 +245,7 @@ const documents = [
       content: (
         <div>
           <h1 style={{ fontSize: '26px', color: '#ff8f00' }}>CONTRACTOR SITE SAFETY</h1>
-          <p>Welcome to the IndustrialIQ facility. All contractors must adhere to the following rules:</p>
+          <p>Welcome to the PlantBrain facility. All contractors must adhere to the following rules:</p>
           <ul style={{ lineHeight: '1.8' }}>
             <li><strong>Sign-In:</strong> Must sign in at the main security gate upon arrival.</li>
             <li><strong>Speed Limit:</strong> Maximum speed limit on site is 15 mph.</li>
@@ -322,6 +322,28 @@ export default function DocumentVault({ addToast }: DocumentVaultProps) {
   const [zoom, setZoom] = useState(1);
   const [visibleCount, setVisibleCount] = useState(7);
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
+  const [docs, setDocs] = useState<any[]>(documents);
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  useEffect(() => {
+    const saved = localStorage.getItem('industrialIQ_docs');
+    if (saved) {
+      try {
+        setDocs(JSON.parse(saved));
+      } catch (e) {}
+    }
+    setIsLoaded(true);
+  }, []);
+
+  useEffect(() => {
+    if (isLoaded) {
+      localStorage.setItem('industrialIQ_docs', JSON.stringify(docs));
+    }
+  }, [docs, isLoaded]);
+
+  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
+  const [uploadCategory, setUploadCategory] = useState('Manuals');
+  const [uploadFile, setUploadFile] = useState<File | null>(null);
 
   const handleCategoryClick = (category: string) => {
     if (activeCategory === category) {
@@ -337,7 +359,7 @@ export default function DocumentVault({ addToast }: DocumentVaultProps) {
     <div className="page-content" style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
       <div>
         <h2 style={{ fontSize: '20px', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '4px' }}>
-          Document Vault
+          Engineering Documents
         </h2>
         <p style={{ fontSize: '13px', color: 'var(--text-tertiary)' }}>
           Secure, searchable repository for all industrial documentation
@@ -352,21 +374,76 @@ export default function DocumentVault({ addToast }: DocumentVaultProps) {
           </div>
           <button 
             className="btn btn-primary"
-            onClick={() => fileInputRef.current?.click()}
+            onClick={() => setIsUploadModalOpen(true)}
           >
             Upload Document
           </button>
-          <input 
-            type="file" 
-            ref={fileInputRef} 
-            style={{ display: 'none' }} 
-            onChange={(e) => {
-              if (e.target.files && e.target.files.length > 0) {
-                if (addToast) addToast('success', 'Upload Complete', `Successfully uploaded ${e.target.files[0].name}`);
-                e.target.value = '';
-              }
-            }}
-          />
+          
+          <Modal 
+            isOpen={isUploadModalOpen} 
+            onClose={() => {
+              setIsUploadModalOpen(false);
+              setUploadFile(null);
+            }} 
+            title="Upload Document"
+            footer={
+              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px' }}>
+                <button className="btn btn-secondary" onClick={() => {
+                  setIsUploadModalOpen(false);
+                  setUploadFile(null);
+                }}>Cancel</button>
+                <button 
+                  className="btn btn-primary" 
+                  disabled={!uploadFile}
+                  onClick={() => {
+                    if (uploadFile) {
+                      const newDoc = {
+                        name: uploadFile.name,
+                        type: uploadFile.name.split('.').pop()?.toUpperCase() || 'UNKNOWN',
+                        size: (uploadFile.size / (1024 * 1024)).toFixed(1) + ' MB',
+                        date: new Date().toLocaleDateString('en-IN', { month: 'short', day: 'numeric', year: 'numeric' }),
+                        category: uploadCategory,
+                        content: <div style={{ padding: '20px' }}><h2>{uploadFile.name}</h2><p>Document successfully uploaded and parsed.</p></div>
+                      };
+                      setDocs([newDoc, ...docs]);
+                      if (addToast) addToast('success', 'Upload Complete', `Successfully uploaded ${uploadFile.name} to ${uploadCategory}`);
+                      setIsUploadModalOpen(false);
+                      setUploadFile(null);
+                    }
+                  }}
+                >
+                  Upload
+                </button>
+              </div>
+            }
+          >
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+              <div>
+                <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: 500 }}>Select File</label>
+                <input 
+                  type="file" 
+                  onChange={(e) => {
+                    if (e.target.files && e.target.files.length > 0) {
+                      setUploadFile(e.target.files[0]);
+                    }
+                  }}
+                  style={{ width: '100%', padding: '10px', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-primary)', background: 'var(--bg-tertiary)', color: 'var(--text-primary)' }}
+                />
+              </div>
+              <div>
+                <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: 500 }}>Category</label>
+                <select 
+                  value={uploadCategory} 
+                  onChange={e => setUploadCategory(e.target.value)}
+                  style={{ width: '100%', padding: '10px', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-primary)', background: 'var(--bg-tertiary)', color: 'var(--text-primary)' }}
+                >
+                  <option value="Manuals">Manuals</option>
+                  <option value="Compliance">Compliance</option>
+                  <option value="Schematics">Schematics</option>
+                </select>
+              </div>
+            </div>
+          </Modal>
         </div>
 
         <div className="grid-3" style={{ marginBottom: '24px', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px' }}>
@@ -377,7 +454,7 @@ export default function DocumentVault({ addToast }: DocumentVaultProps) {
             <Folder size={24} color="var(--accent-primary)" />
             <div>
               <div style={{ fontWeight: 600, fontSize: '14px' }}>OEM Manuals</div>
-              <div style={{ fontSize: '11px', color: 'var(--text-tertiary)' }}>142 files</div>
+              <div style={{ fontSize: '11px', color: 'var(--text-tertiary)' }}>{docs.filter(d => d.category === 'Manuals').length} files</div>
             </div>
           </div>
           <div 
@@ -387,7 +464,7 @@ export default function DocumentVault({ addToast }: DocumentVaultProps) {
             <Folder size={24} color="var(--status-warning)" />
             <div>
               <div style={{ fontWeight: 600, fontSize: '14px' }}>Compliance</div>
-              <div style={{ fontSize: '11px', color: 'var(--text-tertiary)' }}>87 files</div>
+              <div style={{ fontSize: '11px', color: 'var(--text-tertiary)' }}>{docs.filter(d => d.category === 'Compliance').length} files</div>
             </div>
           </div>
           <div 
@@ -397,7 +474,7 @@ export default function DocumentVault({ addToast }: DocumentVaultProps) {
             <Folder size={24} color="var(--accent-secondary)" />
             <div>
               <div style={{ fontWeight: 600, fontSize: '14px' }}>Schematics</div>
-              <div style={{ fontSize: '11px', color: 'var(--text-tertiary)' }}>215 files</div>
+              <div style={{ fontSize: '11px', color: 'var(--text-tertiary)' }}>{docs.filter(d => d.category === 'Schematics').length} files</div>
             </div>
           </div>
         </div>
@@ -414,7 +491,7 @@ export default function DocumentVault({ addToast }: DocumentVaultProps) {
               </tr>
             </thead>
             <tbody>
-              {(activeCategory ? documents.filter(d => d.category === activeCategory) : documents).slice(0, visibleCount).map((doc, i) => (
+              {(activeCategory ? docs.filter(d => d.category === activeCategory) : docs).slice(0, visibleCount).map((doc, i) => (
                 <tr key={i} style={{ borderBottom: '1px solid var(--border-primary)' }}>
                   <td style={{ padding: '12px', display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 500 }}>
                     <File size={16} color="var(--text-muted)" /> {doc.name}
@@ -455,12 +532,12 @@ export default function DocumentVault({ addToast }: DocumentVaultProps) {
             </tbody>
           </table>
           
-          {visibleCount < (activeCategory ? documents.filter(d => d.category === activeCategory) : documents).length && (
+          {visibleCount < (activeCategory ? docs.filter(d => d.category === activeCategory) : docs).length && (
             <div style={{ display: 'flex', justifyContent: 'center', marginTop: '16px' }}>
               <button 
                 className="btn btn-secondary" 
                 style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
-                onClick={() => setVisibleCount((activeCategory ? documents.filter(d => d.category === activeCategory) : documents).length)}
+                onClick={() => setVisibleCount((activeCategory ? docs.filter(d => d.category === activeCategory) : docs).length)}
               >
                 <ChevronDown size={16} /> Load More Documents
               </button>

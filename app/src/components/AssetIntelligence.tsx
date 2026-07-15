@@ -50,7 +50,7 @@ function AssetList({ onSelect }: { onSelect: (id: string) => void }) {
     <div className="page-content">
       <div style={{ marginBottom: '20px' }}>
         <h2 style={{ fontSize: '20px', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '4px' }}>
-          Asset Intelligence
+          Asset Performance Center
         </h2>
         <p style={{ fontSize: '13px', color: 'var(--text-tertiary)' }}>
           {assets.length} assets monitored · Real-time health scoring · Predictive insights

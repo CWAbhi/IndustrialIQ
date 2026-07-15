@@ -15,6 +15,7 @@ import {
   Users,
   FileText,
   ChevronRight,
+  BrainCircuit,
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -24,18 +25,18 @@ interface SidebarProps {
 }
 
 const navItems = [
-  { id: 'dashboard', label: 'Command Center', icon: LayoutDashboard },
-  { id: 'chat', label: 'AI Assistant', icon: MessageSquare, badge: 'AI' },
-  { id: 'assets', label: 'Asset Intelligence', icon: Box },
-  { id: 'graph', label: 'Knowledge Graph', icon: Network },
-  { id: 'compliance', label: 'Compliance Center', icon: ShieldCheck, badgeCount: 3, badgeType: 'warning' as const },
+  { id: 'dashboard', label: 'Operations Command Center', icon: LayoutDashboard },
+  { id: 'chat', label: 'Expert Copilot', icon: MessageSquare, badge: 'AI' },
+  { id: 'assets', label: 'Asset Performance Center', icon: Box },
+  { id: 'graph', label: 'Knowledge Intelligence', icon: Network },
+  { id: 'compliance', label: 'Governance & Compliance', icon: ShieldCheck, badgeCount: 3, badgeType: 'warning' as const },
 ];
 
 const secondaryItems = [
-  { id: 'maintenance', label: 'Maintenance Hub', icon: Wrench },
-  { id: 'failures', label: 'Failure Analysis', icon: Activity },
-  { id: 'experts', label: 'Expert Network', icon: Users },
-  { id: 'documents', label: 'Document Vault', icon: FileText },
+  { id: 'maintenance', label: 'Maintenance Operations', icon: Wrench },
+  { id: 'failures', label: 'Reliability Intelligence', icon: Activity },
+  { id: 'experts', label: 'Engineering Expertise', icon: Users },
+  { id: 'documents', label: 'Engineering Documents', icon: FileText },
 ];
 
 export default function Sidebar({ activeTab, onTabChange, isMobileOpen }: SidebarProps) {
@@ -43,9 +44,9 @@ export default function Sidebar({ activeTab, onTabChange, isMobileOpen }: Sideba
     <div className={`sidebar ${isMobileOpen ? 'mobile-open' : ''}`}>
       {/* Logo */}
       <div className="sidebar-logo">
-        <div className="sidebar-logo-icon">IQ</div>
+        <div className="sidebar-logo-icon"><BrainCircuit size={22} color="white" /></div>
         <div className="sidebar-logo-text">
-          <h1>IndustrialIQ</h1>
+          <h1>PlantBrain</h1>
           <span>Knowledge OS</span>
         </div>
       </div>

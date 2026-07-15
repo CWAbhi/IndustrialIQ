@@ -15,15 +15,15 @@ import ExpertNetwork from '@/components/ExpertNetwork';
 import DocumentVault from '@/components/DocumentVault';
 
 const pageTitles: Record<string, string> = {
-  dashboard: 'Command Center',
-  chat: 'AI Assistant',
-  assets: 'Asset Intelligence',
-  graph: 'Knowledge Graph',
-  compliance: 'Compliance Center',
-  maintenance: 'Maintenance Hub',
-  failures: 'Failure Analysis',
-  experts: 'Expert Network',
-  documents: 'Document Vault',
+  dashboard: 'Operations Command Center',
+  chat: 'Expert Copilot',
+  assets: 'Asset Performance Center',
+  graph: 'Knowledge Intelligence',
+  compliance: 'Governance & Compliance',
+  maintenance: 'Maintenance Operations',
+  failures: 'Reliability Intelligence',
+  experts: 'Engineering Expertise',
+  documents: 'Engineering Documents',
 };
 
 const pageSubtitles: Record<string, string> = {
@@ -93,7 +93,7 @@ export default function Home() {
               {pageTitles[activeTab] || 'Module'}
             </h2>
             <p style={{ fontSize: '14px', color: 'var(--text-tertiary)', textAlign: 'center', maxWidth: '400px' }}>
-              This module is part of the IndustrialIQ platform architecture. 
+              This module is part of the PlantBrain platform architecture. 
               Full implementation available in the production release.
             </p>
             <button className="btn btn-primary" onClick={() => setActiveTab('dashboard')}>
@@ -133,7 +133,7 @@ export default function Home() {
               <Menu size={20} />
             </button>
             <div>
-              <div className="main-header-title">{pageTitles[activeTab] || 'IndustrialIQ'}</div>
+              <div className="main-header-title">{pageTitles[activeTab] || 'PlantBrain'}</div>
               <div style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: '1px' }}>
                 {pageSubtitles[activeTab]}
               </div>

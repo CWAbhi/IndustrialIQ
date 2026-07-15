@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Lock, User, ArrowRight, Activity } from 'lucide-react';
+import { Lock, User, ArrowRight, BrainCircuit } from 'lucide-react';
 
 interface LoginProps {
   onLogin: () => void;
@@ -45,10 +45,10 @@ export default function Login({ onLogin }: LoginProps) {
             marginBottom: '32px',
             boxShadow: 'var(--shadow-glow-accent)'
           }}>
-            <Activity size={40} color="white" />
+            <BrainCircuit size={40} color="white" />
           </div>
           <h1 style={{ fontSize: '48px', fontWeight: 800, color: 'white', marginBottom: '16px', letterSpacing: '-1px' }}>
-            Industrial<span style={{ color: 'var(--accent-primary)' }}>IQ</span>
+            Plant<span style={{ color: 'var(--accent-primary)' }}>Brain</span>
           </h1>
           <p style={{ fontSize: '18px', color: 'var(--text-secondary)', lineHeight: '1.6' }}>
             The Unified Asset & Operations Brain for modern manufacturing.

@@ -71,6 +71,11 @@
   --sidebar-width: 260px;
   --sidebar-collapsed: 72px;
   --header-height: 64px;
+  
+  /* Background pattern */
+  --page-bg-image: linear-gradient(to right, var(--border-primary) 1px, transparent 1px), linear-gradient(to bottom, var(--border-primary) 1px, transparent 1px), radial-gradient(circle at 1px 1px, var(--accent-primary-dim) 2px, transparent 2px);
+  --page-bg-size: 50px 50px, 50px 50px, 50px 50px;
+  --page-bg-position: -1px -1px, -1px -1px, -2px -2px;
 }
 
 :root[data-theme='light'] {
@@ -125,6 +130,15 @@
   --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
   --shadow-glow: 0 0 15px rgba(37, 99, 235, 0.15);
   --shadow-glow-accent: 0 0 20px rgba(124, 58, 237, 0.15);
+  
+  /* Attractive light mode background */
+  --page-bg-image: 
+    radial-gradient(circle at 10% 20%, rgba(37, 99, 235, 0.15) 0%, transparent 50%),
+    radial-gradient(circle at 90% 10%, rgba(124, 58, 237, 0.12) 0%, transparent 40%),
+    radial-gradient(circle at 80% 80%, rgba(8, 145, 178, 0.15) 0%, transparent 50%),
+    radial-gradient(circle at 20% 90%, rgba(37, 99, 235, 0.12) 0%, transparent 40%);
+  --page-bg-size: 100% 100%, 100% 100%, 100% 100%, 100% 100%;
+  --page-bg-position: 0 0, 0 0, 0 0, 0 0;
 }
 
 /* ============================
@@ -140,12 +154,10 @@
 html, body {
   height: 100%;
   background-color: var(--bg-primary);
-  background-image: 
-    linear-gradient(to right, var(--border-primary) 1px, transparent 1px),
-    linear-gradient(to bottom, var(--border-primary) 1px, transparent 1px),
-    radial-gradient(circle at 1px 1px, var(--accent-primary-dim) 2px, transparent 2px);
-  background-size: 50px 50px, 50px 50px, 50px 50px;
-  background-position: -1px -1px, -1px -1px, -2px -2px;
+  background-image: var(--page-bg-image);
+  background-size: var(--page-bg-size);
+  background-position: var(--page-bg-position);
+  background-attachment: fixed;
   color: var(--text-primary);
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   font-size: 16px;

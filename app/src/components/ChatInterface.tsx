@@ -177,7 +177,7 @@ export default function ChatInterface() {
                 marginBottom: '8px',
                 letterSpacing: '-0.5px',
               }}>
-                IndustrialIQ Assistant
+                Expert Copilot
               </h2>
               <p style={{ fontSize: '14px', color: 'var(--text-tertiary)', maxWidth: '480px', lineHeight: '1.6' }}>
                 Ask anything about your plant — assets, failures, maintenance, compliance, or engineering knowledge. 
@@ -328,7 +328,7 @@ export default function ChatInterface() {
             value={input}
             onChange={handleTextareaChange}
             onKeyDown={handleKeyDown}
-            placeholder="Ask IndustrialIQ anything about your plant..."
+            placeholder="Ask PlantBrain anything about your plant..."
             rows={1}
           />
           <button

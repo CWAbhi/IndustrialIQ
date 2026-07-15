@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   ShieldCheck,
   AlertTriangle,
@@ -20,11 +20,40 @@ interface ComplianceCenterProps {
 }
 
 export default function ComplianceCenter({ addToast }: ComplianceCenterProps) {
+  const [items, setItems] = useState(complianceItems);
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  useEffect(() => {
+    const saved = localStorage.getItem('industrialIQ_compliance');
+    if (saved) {
+      try {
+        setItems(JSON.parse(saved));
+      } catch (e) {}
+    }
+    setIsLoaded(true);
+  }, []);
+
+  useEffect(() => {
+    if (isLoaded) {
+      localStorage.setItem('industrialIQ_compliance', JSON.stringify(items));
+    }
+  }, [items, isLoaded]);
+
   const [selectedItem, setSelectedItem] = useState<any>(null);
-  const overallScore = Math.round(complianceItems.reduce((sum, c) => sum + c.score, 0) / complianceItems.length);
-  const totalGaps = complianceItems.reduce((sum, c) => sum + c.gaps, 0);
-  const overdueItems = complianceItems.filter(c => c.status === 'Overdue');
-  const upcomingItems = complianceItems.filter(c => c.status === 'Upcoming');
+  
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingItemId, setEditingItemId] = useState<string | null>(null);
+  const [newReg, setNewReg] = useState('');
+  const [newClause, setNewClause] = useState('');
+  const [newDesc, setNewDesc] = useState('');
+  const [newScore, setNewScore] = useState('100');
+  const [newGaps, setNewGaps] = useState('0');
+  const [newStatus, setNewStatus] = useState('Compliant');
+
+  const overallScore = Math.round(items.reduce((sum, c) => sum + c.score, 0) / items.length) || 0;
+  const totalGaps = items.reduce((sum, c) => sum + c.gaps, 0);
+  const overdueItems = items.filter(c => c.status === 'Overdue');
+  const upcomingItems = items.filter(c => c.status === 'Upcoming');
 
   const getStatusIcon = (status: string) => {
     switch (status) {
@@ -45,13 +74,30 @@ export default function ComplianceCenter({ addToast }: ComplianceCenterProps) {
   return (
     <div className="page-content" style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
       {/* Header */}
-      <div>
-        <h2 style={{ fontSize: '20px', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '4px' }}>
-          Compliance Center
-        </h2>
-        <p style={{ fontSize: '13px', color: 'var(--text-tertiary)' }}>
-          Continuous regulatory monitoring · Proactive gap detection · Audit-ready packages
-        </p>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+        <div>
+          <h2 style={{ fontSize: '20px', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '4px' }}>
+            Governance & Compliance
+          </h2>
+          <p style={{ fontSize: '13px', color: 'var(--text-tertiary)' }}>
+            Continuous regulatory monitoring · Proactive gap detection · Audit-ready packages
+          </p>
+        </div>
+        <button 
+          className="btn btn-primary"
+          onClick={() => {
+            setEditingItemId(null);
+            setNewReg('');
+            setNewClause('');
+            setNewDesc('');
+            setNewScore('100');
+            setNewGaps('0');
+            setNewStatus('Compliant');
+            setIsModalOpen(true);
+          }}
+        >
+          + Add Compliance
+        </button>
       </div>
 
       {/* Summary KPIs */}
@@ -83,7 +129,7 @@ export default function ComplianceCenter({ addToast }: ComplianceCenterProps) {
       </div>
 
       {/* Critical Gaps Alert */}
-      {(overdueItems.length > 0 || complianceItems.some(c => c.gaps > 0)) && (
+      {(overdueItems.length > 0 || items.some(c => c.gaps > 0)) && (
         <div className="alert-card critical">
           <div className="alert-header">
             <div className="alert-icon">🔴</div>
@@ -91,7 +137,7 @@ export default function ComplianceCenter({ addToast }: ComplianceCenterProps) {
           </div>
           <div className="alert-description" style={{ marginLeft: '36px' }}>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '8px' }}>
-              {complianceItems.filter(c => c.status === 'Overdue' || c.gaps > 0).map((item) => (
+              {items.filter(c => c.status === 'Overdue' || c.gaps > 0).map((item) => (
                 <div key={item.id} style={{
                   display: 'flex',
                   alignItems: 'center',
@@ -118,15 +164,36 @@ export default function ComplianceCenter({ addToast }: ComplianceCenterProps) {
 
       {/* Regulation Cards */}
       <div className="compliance-grid">
-        {complianceItems.map((item) => (
+        {items.map((item) => (
           <div key={item.id} className="compliance-card" style={{
             borderColor: item.status === 'Overdue' ? 'var(--status-critical-border)' :
                          item.status === 'Gap' ? 'var(--status-warning-border)' : 'var(--border-primary)',
+            background: item.status === 'Overdue' ? 'var(--status-critical-bg)' :
+                        item.status === 'Gap' ? 'var(--status-warning-bg)' : 'var(--bg-card)'
           }}>
-            <div className="compliance-card-header">
+            <div className="card-header" style={{ marginBottom: '12px' }}>
               <div>
-                <div className="compliance-regulation">{item.regulation}</div>
-                <div className="compliance-clause">{item.clause}</div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                  <div className="card-title">{item.regulation}</div>
+                  <button 
+                    className="btn-ghost" 
+                    style={{ padding: '2px 6px', fontSize: '11px', borderRadius: '4px' }}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setEditingItemId(item.id);
+                      setNewReg(item.regulation);
+                      setNewClause(item.clause);
+                      setNewDesc(item.description);
+                      setNewScore(item.score.toString());
+                      setNewGaps(item.gaps.toString());
+                      setNewStatus(item.status);
+                      setIsModalOpen(true);
+                    }}
+                  >
+                    Edit
+                  </button>
+                </div>
+                <div className="card-subtitle">{item.clause}</div>
               </div>
               {getStatusIcon(item.status)}
             </div>
@@ -285,6 +352,119 @@ export default function ComplianceCenter({ addToast }: ComplianceCenterProps) {
             </div>
           </div>
         )}
+      </Modal>
+
+      {/* Add Compliance Modal */}
+      <Modal 
+        isOpen={isModalOpen} 
+        onClose={() => setIsModalOpen(false)} 
+        title={editingItemId ? "Edit Compliance" : "Add Compliance"}
+        footer={
+          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px' }}>
+            <button className="btn btn-secondary" onClick={() => setIsModalOpen(false)}>Cancel</button>
+            <button 
+              className="btn btn-primary" 
+              disabled={!newReg || !newClause}
+              onClick={() => {
+                if (editingItemId) {
+                  const updatedItems = items.map(item => 
+                    item.id === editingItemId ? {
+                      ...item,
+                      regulation: newReg,
+                      clause: newClause,
+                      description: newDesc,
+                      status: newStatus,
+                      score: parseInt(newScore) || 0,
+                      gaps: parseInt(newGaps) || 0
+                    } : item
+                  );
+                  setItems(updatedItems);
+                  if (addToast) addToast('success', 'Compliance Updated', `${newReg} has been successfully updated.`);
+                } else {
+                  const newItem = {
+                    id: `REG-${Math.floor(Math.random() * 9000) + 1000}`,
+                    regulation: newReg,
+                    clause: newClause,
+                    description: newDesc,
+                    status: newStatus,
+                    score: parseInt(newScore) || 0,
+                    gaps: parseInt(newGaps) || 0,
+                    evidence: ['User Attached Evidence.pdf']
+                  };
+                  setItems([newItem, ...items]);
+                  if (addToast) addToast('success', 'Compliance Added', `${newReg} has been added to monitoring.`);
+                }
+                setIsModalOpen(false);
+              }}
+            >Save Compliance</button>
+          </div>
+        }
+      >
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          <div>
+            <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: 500 }}>Regulation Name</label>
+            <input 
+              type="text" 
+              value={newReg} 
+              onChange={e => setNewReg(e.target.value)} 
+              placeholder="e.g. ISO 9001:2015"
+              style={{ width: '100%', padding: '10px', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-primary)', background: 'var(--bg-tertiary)', color: 'var(--text-primary)' }}
+            />
+          </div>
+          <div>
+            <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: 500 }}>Clause / Section</label>
+            <input 
+              type="text" 
+              value={newClause} 
+              onChange={e => setNewClause(e.target.value)} 
+              placeholder="e.g. Section 7.1.5"
+              style={{ width: '100%', padding: '10px', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-primary)', background: 'var(--bg-tertiary)', color: 'var(--text-primary)' }}
+            />
+          </div>
+          <div>
+            <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: 500 }}>Description</label>
+            <textarea 
+              value={newDesc} 
+              onChange={e => setNewDesc(e.target.value)} 
+              style={{ width: '100%', padding: '10px', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-primary)', background: 'var(--bg-tertiary)', color: 'var(--text-primary)', minHeight: '80px', resize: 'vertical' }}
+            />
+          </div>
+          <div style={{ display: 'flex', gap: '16px' }}>
+            <div style={{ flex: 1 }}>
+              <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: 500 }}>Score (%)</label>
+              <input 
+                type="number" 
+                min="0" max="100"
+                value={newScore} 
+                onChange={e => setNewScore(e.target.value)} 
+                style={{ width: '100%', padding: '10px', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-primary)', background: 'var(--bg-tertiary)', color: 'var(--text-primary)' }}
+              />
+            </div>
+            <div style={{ flex: 1 }}>
+              <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: 500 }}>Gaps</label>
+              <input 
+                type="number" 
+                min="0"
+                value={newGaps} 
+                onChange={e => setNewGaps(e.target.value)} 
+                style={{ width: '100%', padding: '10px', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-primary)', background: 'var(--bg-tertiary)', color: 'var(--text-primary)' }}
+              />
+            </div>
+          </div>
+          <div>
+            <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: 500 }}>Status</label>
+            <select 
+              value={newStatus} 
+              onChange={e => setNewStatus(e.target.value)}
+              style={{ width: '100%', padding: '10px', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-primary)', background: 'var(--bg-tertiary)', color: 'var(--text-primary)' }}
+            >
+              <option value="Compliant">Compliant</option>
+              <option value="Gap">Gap</option>
+              <option value="Overdue">Overdue</option>
+              <option value="Upcoming">Upcoming</option>
+            </select>
+          </div>
+        </div>
       </Modal>
     </div>
   );

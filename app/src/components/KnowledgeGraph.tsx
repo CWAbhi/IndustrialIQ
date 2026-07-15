@@ -293,7 +293,7 @@ export default function KnowledgeGraphExplorer() {
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div>
           <h2 style={{ fontSize: '20px', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '2px' }}>
-            🕸️ Knowledge Graph Explorer
+            🕸️ Knowledge Intelligence Explorer
           </h2>
           <p style={{ fontSize: '12px', color: 'var(--text-tertiary)' }}>
             {knowledgeGraphNodes.length} nodes · {knowledgeGraphEdges.length} relationships · Interactive exploration

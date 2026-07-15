@@ -17,7 +17,7 @@ export default function FailureAnalysis({ addToast }: FailureAnalysisProps) {
     <div className="page-content" style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
       <div>
         <h2 style={{ fontSize: '20px', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '4px' }}>
-          Failure Analysis
+          Reliability Intelligence
         </h2>
         <p style={{ fontSize: '13px', color: 'var(--text-tertiary)' }}>
           Root cause analysis and Failure DNA matching
