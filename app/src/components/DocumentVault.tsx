@@ -323,23 +323,7 @@ export default function DocumentVault({ addToast }: DocumentVaultProps) {
   const [visibleCount, setVisibleCount] = useState(7);
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const [docs, setDocs] = useState<any[]>(documents);
-  const [isLoaded, setIsLoaded] = useState(false);
-
-  useEffect(() => {
-    const saved = localStorage.getItem('industrialIQ_docs');
-    if (saved) {
-      try {
-        setDocs(JSON.parse(saved));
-      } catch (e) {}
-    }
-    setIsLoaded(true);
-  }, []);
-
-  useEffect(() => {
-    if (isLoaded) {
-      localStorage.setItem('industrialIQ_docs', JSON.stringify(docs));
-    }
-  }, [docs, isLoaded]);
+  // Local storage caching removed because docs contain JSX elements which cannot be safely serialized
 
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
   const [uploadCategory, setUploadCategory] = useState('Manuals');
