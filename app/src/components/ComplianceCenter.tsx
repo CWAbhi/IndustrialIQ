@@ -373,7 +373,7 @@ export default function ComplianceCenter({ addToast }: ComplianceCenterProps) {
                       regulation: newReg,
                       clause: newClause,
                       description: newDesc,
-                      status: newStatus,
+                      status: newStatus as "Overdue" | "Compliant" | "Gap" | "Upcoming",
                       score: parseInt(newScore) || 0,
                       gaps: parseInt(newGaps) || 0
                     } : item
@@ -386,10 +386,12 @@ export default function ComplianceCenter({ addToast }: ComplianceCenterProps) {
                     regulation: newReg,
                     clause: newClause,
                     description: newDesc,
-                    status: newStatus,
+                    status: newStatus as "Overdue" | "Compliant" | "Gap" | "Upcoming",
                     score: parseInt(newScore) || 0,
                     gaps: parseInt(newGaps) || 0,
-                    evidence: ['User Attached Evidence.pdf']
+                    evidence: ['User Attached Evidence.pdf'],
+                    nextDeadline: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+                    affectedAssets: []
                   };
                   setItems([newItem, ...items]);
                   if (addToast) addToast('success', 'Compliance Added', `${newReg} has been added to monitoring.`);
