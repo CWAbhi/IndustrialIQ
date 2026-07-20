@@ -587,6 +587,7 @@ html, body {
   border: 1px solid;
   transition: all var(--transition-base);
   cursor: pointer;
+  background-color: var(--bg-card);
 }
 
 .alert-card:hover {
@@ -594,22 +595,22 @@ html, body {
 }
 
 .alert-card.critical {
-  background: var(--status-critical-bg);
+  background-image: linear-gradient(var(--status-critical-bg), var(--status-critical-bg));
   border-color: var(--status-critical-border);
 }
 
 .alert-card.warning {
-  background: var(--status-warning-bg);
+  background-image: linear-gradient(var(--status-warning-bg), var(--status-warning-bg));
   border-color: var(--status-warning-border);
 }
 
 .alert-card.success {
-  background: var(--status-success-bg);
+  background-image: linear-gradient(var(--status-success-bg), var(--status-success-bg));
   border-color: var(--status-success-border);
 }
 
 .alert-card.info {
-  background: var(--status-info-bg);
+  background-image: linear-gradient(var(--status-info-bg), var(--status-info-bg));
   border-color: var(--status-info-border);
 }
 

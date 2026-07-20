@@ -168,8 +168,8 @@ export default function ComplianceCenter({ addToast }: ComplianceCenterProps) {
           <div key={item.id} className="compliance-card" style={{
             borderColor: item.status === 'Overdue' ? 'var(--status-critical-border)' :
                          item.status === 'Gap' ? 'var(--status-warning-border)' : 'var(--border-primary)',
-            background: item.status === 'Overdue' ? 'var(--status-critical-bg)' :
-                        item.status === 'Gap' ? 'var(--status-warning-bg)' : 'var(--bg-card)'
+            backgroundImage: item.status === 'Overdue' ? 'linear-gradient(var(--status-critical-bg), var(--status-critical-bg))' :
+                             item.status === 'Gap' ? 'linear-gradient(var(--status-warning-bg), var(--status-warning-bg))' : 'none'
           }}>
             <div className="card-header" style={{ marginBottom: '12px' }}>
               <div>
